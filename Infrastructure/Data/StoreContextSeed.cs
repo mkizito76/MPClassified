@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Core.Entities;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
@@ -15,23 +16,28 @@ namespace Infrastructure.Data
         {
             try
             {
-                if(!context.ProductBrands.Any())
+                context.Database.OpenConnection();
+                if (!context.ProductBrands.Any())
                 {
-                   var dataToSeed = File.ReadAllText("../Infrastructure/Data/SeedData/brands.json");
+                    var dataToSeed = File.ReadAllText("../Infrastructure/Data/SeedData/brands.json");
                     var data = JsonSerializer.Deserialize<List<ProductBrand>>(dataToSeed);
+                    context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.ProductBrands ON"); // To set specific Ids
                     data.ForEach(x => context.ProductBrands.Add(x));
                     await context.SaveChangesAsync();
+                    context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.ProductBrands OFF");
                 }
 
-                if(!context.ProductTypes.Any())
+                if (!context.ProductTypes.Any())
                 {
                     var dataToSeed = File.ReadAllText("../Infrastructure/Data/SeedData/types.json");
                     var data = JsonSerializer.Deserialize<List<ProductType>>(dataToSeed);
+                    context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.ProductTypes ON");
                     data.ForEach(x => context.ProductTypes.Add(x));
                     await context.SaveChangesAsync();
+                    context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.ProductTypes OFF");
                 }
 
-                if(!context.Products.Any())
+                if (!context.Products.Any())
                 {
                     var dataToSeed = File.ReadAllText("../Infrastructure/Data/SeedData/products.json");
                     var data = JsonSerializer.Deserialize<List<Product>>(dataToSeed);
@@ -43,6 +49,10 @@ namespace Infrastructure.Data
             {
                 var logger = loggerFactory.CreateLogger<StoreContextSeed>();
                 logger.LogError(ex.Message);
+            }
+            finally
+            {
+                context.Database.CloseConnection();
             }
         }
     }
