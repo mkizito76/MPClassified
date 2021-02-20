@@ -19,7 +19,8 @@ export class ShopComponent implements OnInit {
   shopParams = new ShopParams();
   totalCount: number;
   sortOptions = [
-    { name: 'Alphabetical', value: 'name' },
+    { name: 'Name: A to Z', value: 'nameAsc' },
+    { name: 'Name: Z to A', value: 'nameDesc' },
     { name: 'Price: Low to High', value: 'priceAsc' },
     { name: 'Price: High to Low', value: 'priceDesc' }
   ];

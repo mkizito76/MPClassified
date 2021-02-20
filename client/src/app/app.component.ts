@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { BasketService } from './basket/basket.service';
+import { Basket } from './shared/models/basket';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +10,16 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'MPClassified';
 
-  constructor() { }
+  constructor(private basketService : BasketService) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    const basketId = localStorage.getItem('basket_id');
+    if(basketId){
+      this.basketService.getBasket(basketId).subscribe(() => {
+        console.log('initialized');
+      }, error => {
+        console.log(error);
+      });      
+    }
+   }
 }

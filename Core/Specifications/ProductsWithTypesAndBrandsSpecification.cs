@@ -28,6 +28,9 @@ namespace Core.Specifications
                     case "priceDesc":
                         AddOrderByDescending(p => p.Price);
                         break;
+                    case "nameDesc":
+                        AddOrderByDescending(n => n.Name);
+                        break;
                     default:
                         AddOrderBy(n => n.Name);
                         break;
