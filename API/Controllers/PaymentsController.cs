@@ -13,7 +13,7 @@ using Order = Core.Entities.OrderAggregate.Order;
 
 namespace API.Controllers
 {
-public class PaymentsController : BaseApiController
+    public class PaymentsController : BaseApiController
     {
         private readonly IPaymentService _paymentService;
         private readonly string _whSecret;
@@ -51,7 +51,7 @@ public class PaymentsController : BaseApiController
                 case "payment_intent.succeeded":
                     intent = (PaymentIntent)stripeEvent.Data.Object;
                     _logger.LogInformation("Payment Succeeded: ", intent.Id);
-                    order  = await _paymentService.UpdateOrderPaymentSucceeded(intent.Id);
+                    order = await _paymentService.UpdateOrderPaymentSucceeded(intent.Id);
                     _logger.LogInformation("Order updated to payment received: ", order.Id);
                     break;
                 case "payment_intent.payment_failed":
